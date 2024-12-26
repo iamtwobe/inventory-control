@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+    <div class="container mb-5">
+        <h1 class="text-light text-opacity-75 mt-4 border-bottom pb-2 border-2 border-secondary rounded-start">Log-in</h1>
+        <div class="row">
+            <div class="col letrabranca">
+                <form method="POST" action="" class="p-3 border-3 border border-light border-opacity-50 mt-5 rounded bg-secondary bg-opacity-10">
+                    {{ form_login.csrf_token }}
+                    <legend class="m-3">Login</legend>
+                    <fieldset class="mt-5">
+                        <div class="form-group mb-2 m-2">
+                            {{ form_login.account.label(class="form-label") }}
+
+                            {% if form_login.account.errors %}
+                                {{ form_login.account(class="form-control is-invalid", placeholder="username or email") }}
+                            <div class="invalid-feedback">
+                                {% for erro in form_login.account.errors %}
+                                    {{ erro }}
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                                {{ form_login.account(class="form-control", placeholder="username or email") }}
+                            {% endif %}
+
+                            
+                        </div>
+                        <div class="form-group mb-2 m-2">
+                            {{ form_login.password.label(class="form-label") }}
+
+                            {% if form_login.password.errors %}
+                                {{ form_login.password(class="form-control", placeholder="Your password") }}
+                            <div class="invalid-feedback">
+                                {% for erro in form_login.password.errors %}
+                                    {{ erro }}
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                                {{ form_login.password(class="form-control", placeholder="Your password.") }}
+                            {% endif %}
+                        </div>
+                        <div class="form-group m-2">
+                            {{ form_login.remember_data.label(class="form-label") }}
+                            {{ form_login.remember_data(class="form-check-input") }}
+                            <a class="form-label btn-secondary m-2" style="color: #6f808f" href="{{ url_for('signup') }}">Don't have an account?</a>
+                        </div>
+                    </fieldset>
+                    {{ form_login.submit_button_login(class="btn btn-secondary m-2") }}
+                </form>
+            </div>
+        </div>
+
+{% endblock %}
