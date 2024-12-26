@@ -9,10 +9,15 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = os.urandom(64)
 
-db_path = os.path.join(os.path.dirname(__file__), 'users', 'users.db')
-print(db_path)
-db_uri = 'sqlite:///{}'.format(db_path)
-app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+users_db_path = os.path.join(os.path.dirname(__file__), 'users', 'users.db')
+users_db_uri = 'sqlite:///{}'.format(users_db_path)
+app.config['SQLALCHEMY_DATABASE_URI'] = users_db_uri
+
+inventory_db_uri = os.path.join(os.getcwd(), 'src', 'database', 'inventory.db')
+app.config['SQLALCHEMY_BINDS'] = {
+    'inventory': f'sqlite:///{inventory_db_uri}' 
+}
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 bcrypt = Bcrypt(app)

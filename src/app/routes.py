@@ -1,8 +1,9 @@
-from flask import render_template, request, flash, redirect, url_for, abort
+from flask import render_template, request, flash, redirect, url_for
 from src.app import app, users_database, bcrypt
 from src.app.models import User
 from src.app.forms import FormLogin, FormSignup
-from flask_login import login_user, logout_user, current_user, login_required
+from flask_login import login_user, logout_user, login_required
+
 
 @app.route('/')
 def home():
