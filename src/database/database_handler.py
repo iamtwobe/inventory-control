@@ -33,7 +33,7 @@ class AppDatabase():
     def create_category_table(self):
         self.cursor.execute(
             """
-                CREATE TABLE IF NOT EXISTS category (
+                CREATE TABLE IF NOT EXISTS categories (
                 category_id     INTEGER      PRIMARY KEY  AUTOINCREMENT,
                 category_name   VARCHAR(24)  NOT NULL     UNIQUE
             )
@@ -43,7 +43,7 @@ class AppDatabase():
     def create_brand_table(self):
         self.cursor.execute(
             """
-                CREATE TABLE IF NOT EXISTS brand (
+                CREATE TABLE IF NOT EXISTS brands (
                 brand_id     INTEGER      PRIMARY KEY  AUTOINCREMENT,
                 brand_name   VARCHAR(24)  NOT NULL     UNIQUE
             )
@@ -56,7 +56,7 @@ class AppDatabase():
         
         try:
             self.cursor.execute(
-                "SELECT category_id FROM category WHERE category_name = ?",
+                "SELECT category_id FROM categories WHERE category_name = ?",
                 (product_category.lower(),)
             )
             category_id = self.cursor.fetchone()
@@ -65,7 +65,7 @@ class AppDatabase():
                 return None
             
             self.cursor.execute(
-                "SELECT brand_id FROM brand WHERE brand_name = ?",
+                "SELECT brand_id FROM brands WHERE brand_name = ?",
                 (product_brand.lower(),)
             )
             brand_id = self.cursor.fetchone()
@@ -78,11 +78,16 @@ class AppDatabase():
                     INSERT INTO products (product_name, product_category, product_price, product_brand, product_description)
                     VALUES (?, ?, ?, ?, ?)
                 """,
-                (product_name.lower(), product_category.lower(), product_price, product_brand.lower(), product_description)
+                (product_name, product_category.lower(), product_price, product_brand.lower(), product_description)
             )
             self.conn.commit()
+
+            return 1
         except sqlite.IntegrityError:
             print("Product already exists")
+            return None
+        except Exception as e:
+            print(e)
             return None
 
     def insert_category(self, category_name: str=None) -> None:
@@ -91,10 +96,15 @@ class AppDatabase():
             return None
         
         try:
-            self.cursor.execute("INSERT INTO category (category_name) VALUES (?)", (category_name.lower(),))
+            self.cursor.execute("INSERT INTO categories (category_name) VALUES (?)", (category_name.lower(),))
             self.conn.commit()
+            return 1
         except sqlite.IntegrityError:
             print("Category already exists")
+            return None
+        
+        except Exception as e:
+            print(e)
             return None
         
     def insert_brand(self, brand_name: str=None) -> None:
@@ -102,10 +112,15 @@ class AppDatabase():
             print("Missing brand_name")
             return None
         try:
-            self.cursor.execute("INSERT INTO brand (brand_name) VALUES (?)", (brand_name.lower(),))
+            self.cursor.execute("INSERT INTO brands (brand_name) VALUES (?)", (brand_name.lower(),))
             self.conn.commit()
+            return 1
         except sqlite.IntegrityError:
             print("Brand already exists")
+            return None
+        
+        except Exception as e:
+            print(e)
             return None
 
     def get_all_table(self, table) -> list:
@@ -115,7 +130,6 @@ class AppDatabase():
     
     def verify_db(self, selection) -> dict:
         if selection:
-            # Se for mais que um item
             if type(selection) is list:
                 results = []
                 for i in selection:
@@ -123,7 +137,6 @@ class AppDatabase():
                     result = dict(zip(column_names, i))
                     results.append(result)
                 return results
-            # Se for apenas um item
             column_names = [description[0] for description in self.cursor.description]
             result = dict(zip(column_names, selection))
             return result
@@ -137,9 +150,11 @@ class AppDatabase():
 if __name__ == "__main__":
     inventory_db = AppDatabase("src/database/inventory.db")
 
-    # inventory_db.insert_category("foods")
-    # inventory_db.insert_brand("good apples")
-    # inventory_db.insert_product("Apple", "foods", 0.99, "good apples", "An apple.")
-    query = inventory_db.get_all_table('brand')
+
+    #inventory_db.insert_category("processor")
+    #inventory_db.insert_brand("corsair")
+    
+    inventory_db.insert_product("Fan BVT400", "fan", 199.90, "britania", "A super fan")
+    query = inventory_db.get_all_table('brands')
     print(query)
     inventory_db.close()

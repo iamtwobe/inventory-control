@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, EmailField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, EmailField, FloatField, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from src.app.models import User
 from flask_login import current_user
@@ -42,3 +42,16 @@ class FormLogin(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6, max= 24)])
     remember_data = BooleanField('Remember me')
     submit_button_login = SubmitField('Login')
+
+
+class FormAddBrand(FlaskForm):
+    brand_name = StringField('Brand', validators=[DataRequired(), Length(min=3, max=24)])
+
+class FormAddCategory(FlaskForm):
+    category_name = StringField('Category', validators=[DataRequired(), Length(min=3, max=24)])
+
+class FormAddProduct(FlaskForm):
+    product_name = StringField('Product', validators=[DataRequired(), Length(min=3, max=24)])
+    product_price = FloatField('Price', validators=[DataRequired()])
+    product_brand = SelectField('Brand', validators=[DataRequired()])
+    product_category = SelectField('Category', validators=[DataRequired()])

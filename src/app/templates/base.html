@@ -38,7 +38,10 @@
             </ul>
             <ul class="d-flex navbar-nav me-2">
                 {% if current_user.is_authenticated %}
-                  <li class="nav-item me-2 col-12 nav-underline">
+                  <li class="nav-item me-2 col-0">
+                    <a class="btn btn-outline-success nav-link mt-0" href="{{ url_for('add_new') }}">Add</a>
+                  </li>
+                  <li class="nav-item me-2 col-7">
                     <a class="btn btn-outline-danger nav-link" href="{{ url_for('logout') }}">Logout</a>
                   </li>
                 {% else %}

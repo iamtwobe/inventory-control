@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <div class="container mt-5 bg-light p-4 rounded shadow-sm">
+        <h1 class="text-center mb-4 text-dark">Inventory</h1>
+
+        <!-- Filters and Sorting Form -->
+        <div class="d-flex justify-content-start mb-3">
+            <form method="GET" action="{{ url_for('inventory') }}" class="d-flex">
+                <!-- Category Filter -->
+                <select name="category" class="form-control mr-2">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                        <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
+                    {% endfor %}
+                </select>
+                
+                <!-- Sort by Price or Index -->
+                <select name="sort_by" class="form-control mr-2" style="width: 170px;">
+                    <option value="price_asc" {% if sort_by == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+                    <option value="price_desc" {% if sort_by == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+                    <option value="index_asc" {% if sort_by == 'index_asc' %}selected{% endif %}>Index: Ascending</option>
+                    <option value="index_desc" {% if sort_by == 'index_desc' %}selected{% endif %}>Index: Descending</option>
+                </select>
+
+                <button type="submit" class="btn btn-secondary">Apply</button>
+            </form>
+        </div>
+
+        <!-- Table container -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover table-sm">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                        <tr class="product-row">
+                            <td>{{ product[0] }}</td>  <!-- product_id -->
+                            <td>{{ product[1] }}</td>  <!-- product_name -->
+                            <td>{{ product[2] }}</td>  <!-- product_category -->
+                            <td>{{ product[3] }}</td>  <!-- product_price -->
+                            <td>{{ product[4] }}</td>  <!-- product_description -->
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">No products found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <style>
+        .product-row {
+            background-color: #f8f9fa;
+        }
+        .product-row:nth-child(even) {
+            background-color: #c3c3c3;
+        }
+        .product-row:hover {
+            background-color: #c0c1c1;
+            color: white;
+        }
+        .product-row:nth-child(even):hover {
+            background-color: #9e9e9e;
+        }
+    </style>
+{% endblock %}
